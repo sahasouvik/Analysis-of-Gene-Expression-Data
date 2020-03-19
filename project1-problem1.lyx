@@ -1,0 +1,3682 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Data Analysis Project
+\end_layout
+
+\begin_layout Author
+Class Roll Number-06
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Problem-1
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Introduction of the data:-
+\end_layout
+
+\begin_layout Standard
+A gene is a stretch of DNA inside the cell that tells the cell how to make
+ a specific protein.
+ All cells in the body contain the same genes, but the genes have different
+ expression levels in different cell types, and cells can regulate gene
+ expression levels in response to their environment.
+ Many diseases, including cancer, fundamentally involve breakdowns in the
+ regulation of gene expression.
+ The expression profile of cancer cells becomes abnormal, and different
+ kinds of cancers have different expression profiles.
+ Our data are gene expression measurements from cells drawn from 64 different
+ tumors (from 64 different patients).
+ In each case, a device called a microarray (or gene chip) measured the
+ expression of each of 6830 distinct genes, essentially the logarithm of
+ the chemical concentration of the gene’s product.
+ Thus, each record in the data set is a vector of length 6830.
+ The cells mostly come from known cancer types, so there are classes, in
+ addition to the measurements of the expression levels.
+ The classes are breast, cns(central nervous system), colon, leukemia, melanoma,
+ nsclc(non-small cell lung cancer), ovarian, prostate, renal, K562A, K562B,
+ MCF7A, MCF7D (those three are laboratory tumor cultures) and unknown.
+\end_layout
+
+\begin_layout Standard
+The dataset is present in the library ElemStatLearn as nci.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+ANALYSIS:-
+\end_layout
+
+\begin_layout Standard
+I first install the library ElemStatLearn from CRAN and load the dataset
+ as follows:-
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(ElemStatLearn)
+\end_layout
+
+\begin_layout Plain Layout
+
+data(nci)
+\end_layout
+
+\begin_layout Plain Layout
+
+data = t(nci)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The matrix needs to be transposed because it gives the genes as the rows
+ and cells as the columns.
+\end_layout
+
+\begin_layout Standard
+We use the K-means algorithm to cluster the cells.First let us state what
+ is the algorithm.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+K-Means Algorithm:-
+\end_layout
+
+\begin_layout Standard
+K-means is one of the most popular partitioning methods of clustering.
+ It performs a non-hierarchical clustering and groups the observations of
+ a dataset into a given number of clusters with the view to minimize the
+ within-cluster scatter/variation due to the clustering process.
+ 
+\end_layout
+
+\begin_layout Standard
+Suppose we have 
+\begin_inset Formula $n$
+\end_inset
+
+ observations 
+\begin_inset Formula $x_{1},x_{2},...,x_{n}\epsilon\mathbb{R}^{p}$
+\end_inset
+
+ and a measure 
+\begin_inset Formula $d_{ij}=d(x_{i},x_{j})$
+\end_inset
+
+ of dissimilarity between 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{j},$
+\end_inset
+
+ for every 
+\begin_inset Formula $i,j=1(1)n$
+\end_inset
+
+.
+ We may wish to group the 
+\begin_inset Formula $n$
+\end_inset
+
+ observations into 
+\begin_inset Formula $K$
+\end_inset
+
+ clusters.
+ A clustering of the above 
+\begin_inset Formula $n$
+\end_inset
+
+ observations can be thought of as a function 
+\begin_inset Formula $C$
+\end_inset
+
+ which assigns the cluster number for an observation, i.e, for an observation
+ 
+\begin_inset Formula $x_{i},$
+\end_inset
+
+ 
+\begin_inset Formula $C(x_{i})=k\epsilon\{1,2,...,K\}$
+\end_inset
+
+ denotes the cluster 
+\begin_inset Formula $k$
+\end_inset
+
+ to which 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ is assigned during the clustering process.
+ We may, instead, simply denote by 
+\begin_inset Formula $C(i)$
+\end_inset
+
+, the cluster to which 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ is assigned.
+\end_layout
+
+\begin_layout Standard
+Now, the within cluster scatter due to the above clustering is given by
+\begin_inset Formula 
+\[
+W=\frac{1}{2}\sum_{k=1}^{K}\frac{1}{n_{k}}\sum_{i:C(i)=k,}\sum_{j:C(j)=k}d_{ij}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $n_{k}$
+\end_inset
+
+ is the number of observations in the
+\begin_inset Formula $k^{th}$
+\end_inset
+
+ cluster, 
+\begin_inset Formula $k=1(1)K$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In particular, we may take 
+\begin_inset Formula $d_{ij}=\Vert x_{i}-x_{j}\Vert^{2}$
+\end_inset
+
+, the squared Euclidean Distance between the observations 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{j}$
+\end_inset
+
+.
+ Then, we have 
+\begin_inset Formula 
+\[
+W=\frac{1}{2}\sum_{k=1}^{K}\frac{1}{n_{k}}\sum_{i:C(i)=k}\sum_{,j:C(j)=k}\Vert x_{i}-x_{j}\Vert^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\sum_{k=1}^{K}\frac{1}{n_{k}}\sum_{i:C(i)=k}\Vert x_{i}-\bar{x_{k}}\Vert^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\begin_inset Formula 
+\[
+\bar{x_{k}}=\frac{1}{n_{k}}\sum_{i:C(i)=k}x_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+is the mean of the observations in the 
+\begin_inset Formula $k^{th}$
+\end_inset
+
+ cluster.
+\end_layout
+
+\begin_layout Standard
+This 
+\begin_inset Formula $W$
+\end_inset
+
+ is the within-cluster variation due to the above clustering.
+ Equivalently, we may choose to minimize
+\begin_inset Formula 
+\[
+W=\sum_{k=1}^{K}\frac{1}{n_{k}}\sum_{i:C(i)=k}\Vert x_{i}-c_{k}\Vert^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with respect to the clustering method 
+\begin_inset Formula $C$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{1},c_{2},...,c_{K}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+K-means attempts to find the clustering method 
+\begin_inset Formula $C$
+\end_inset
+
+ so as to approximately minimize this within cluster variation.
+ It runs in the following way:
+\end_layout
+
+\begin_layout Itemize
+We start with an initial guess for 
+\begin_inset Formula $c_{1},c_{2},...,c_{K}$
+\end_inset
+
+ (e.g., pick 
+\begin_inset Formula $K$
+\end_inset
+
+ points at random over the range of 
+\begin_inset Formula $x_{1},...,x_{K}$
+\end_inset
+
+), then:
+\end_layout
+
+\begin_layout Enumerate
+Minimize over 
+\begin_inset Formula $C$
+\end_inset
+
+: for each 
+\begin_inset Formula $i=1(1)n$
+\end_inset
+
+, find the cluster center 
+\begin_inset Formula $c_{k}$
+\end_inset
+
+ closest to 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ , and let 
+\begin_inset Formula $C(i)=k$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Minimize over 
+\begin_inset Formula $c_{1},...,c_{K}:$
+\end_inset
+
+ for each 
+\begin_inset Formula $k=1(1)K$
+\end_inset
+
+, let 
+\begin_inset Formula $c_{k}=\bar{x_{k}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We repeat this process and stop when 
+\begin_inset Formula $W$
+\end_inset
+
+ does not change any more.
+\end_layout
+
+\begin_layout Standard
+Thus, one gets hold of a clustering method 
+\begin_inset Formula $C$
+\end_inset
+
+ to cluster the above 
+\begin_inset Formula $n$
+\end_inset
+
+ observations.
+\end_layout
+
+\begin_layout Standard
+a)We use the K-means algorithm to cluster the cells with k=14 to match the
+ number of true classes.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+cluster = kmeans(data,centers=14)
+\end_layout
+
+\begin_layout Plain Layout
+
+cluster$cluster
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+i)The K-means algorithm makes a lumping error whenever it assigns two cells
+ of different classes to the same cluster, and a splitting error when it
+ puts two cells of the same class in different clusters.
+ Each pair of cells can give an error.
+\end_layout
+
+\begin_layout Standard
+A)So here I will write a function which takes as inputs a vector of classes
+ and a vector of clusters, and gives as output the number of lumping errors.Then
+ I have to test your function by verifying that when the classes are (1,
+ 2, 2), the three clusterings (1, 2, 2), (2,1, 1) and (4, 5, 6) all give
+ zero lumping errors, but the clustering (1, 1, 1) gives two lumping errors.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+# Count number of errors made by lumping different classes into
+\end_layout
+
+\begin_layout Plain Layout
+
+# one cluster
+\end_layout
+
+\begin_layout Plain Layout
+
+# Uses explicit, nested iteration
+\end_layout
+
+\begin_layout Plain Layout
+
+# Input: vector of true classes, vector of guessed clusters
+\end_layout
+
+\begin_layout Plain Layout
+
+# Output: number of distinct pairs belonging to different classes
+\end_layout
+
+\begin_layout Plain Layout
+
+# lumped into one cluster
+\end_layout
+
+\begin_layout Plain Layout
+
+numlumperror <- function(true.class,guessed.cluster) {
+\end_layout
+
+\begin_layout Plain Layout
+
+n = length(true.class)
+\end_layout
+
+\begin_layout Plain Layout
+
+# Checking if the two vectors have the same length!
+\end_layout
+
+\begin_layout Plain Layout
+
+stopifnot(n == length(guessed.cluster))
+\end_layout
+
+\begin_layout Plain Layout
+
+# Initialize the count variable
+\end_layout
+
+\begin_layout Plain Layout
+
+num.lumping.errors = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+# checking all distinct pairs
+\end_layout
+
+\begin_layout Plain Layout
+
+for (i in 1:(n-1)) {
+\end_layout
+
+\begin_layout Plain Layout
+
+# think of above-diagonal entries in a matrix
+\end_layout
+
+\begin_layout Plain Layout
+
+for (j in (i+1):n) {
+\end_layout
+
+\begin_layout Plain Layout
+
+if ((true.class[i] != true.class[j])
+\end_layout
+
+\begin_layout Plain Layout
+
+& (guessed.cluster[i] == guessed.cluster[j])) {
+\end_layout
+
+\begin_layout Plain Layout
+
+# lumping error: really different but put in same cluster
+\end_layout
+
+\begin_layout Plain Layout
+
+num.lumping.errors = num.lumping.errors +1
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+return(num.lumping.errors)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+numlumperror(c(1,2,2),c(1,2,2))
+\end_layout
+
+\begin_layout Plain Layout
+
+numlumperror(c(1,2,2),c(2,1,1))
+\end_layout
+
+\begin_layout Plain Layout
+
+numlumperror(c(1,2,2),c(4,5,6))
+\end_layout
+
+\begin_layout Plain Layout
+
+numlumperror(c(1,2,2),c(1,1,1))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So we see that the function gives 0 number of lumping errors when the true
+ class is (1,2,2) and the clusterings are (1,2,2),(2,1,1) and (4,5,6) but
+ two lumping errors when the clustering is (1,1,1).So this is a valid function
+ for counting the number of lumping errors.
+\end_layout
+
+\begin_layout Standard
+B)Here I will write a function for finding the number of splitting errors
+ and verify for the inputs given above.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+# Count number of errors made by splitting same classes into different cluster
+\end_layout
+
+\begin_layout Plain Layout
+
+# Uses explicit, nested iteration
+\end_layout
+
+\begin_layout Plain Layout
+
+# Input: vector of true classes, vector of guessed clusters
+\end_layout
+
+\begin_layout Plain Layout
+
+# Output: number of distinct pairs belonging to same class
+\end_layout
+
+\begin_layout Plain Layout
+
+# splitted into different clusters
+\end_layout
+
+\begin_layout Plain Layout
+
+numspliterror <- function(true.class,guessed.cluster) {
+\end_layout
+
+\begin_layout Plain Layout
+
+n = length(true.class)
+\end_layout
+
+\begin_layout Plain Layout
+
+# Checking if the two vectors have the same length!
+\end_layout
+
+\begin_layout Plain Layout
+
+stopifnot(n == length(guessed.cluster))
+\end_layout
+
+\begin_layout Plain Layout
+
+# Initialize the count variable
+\end_layout
+
+\begin_layout Plain Layout
+
+num.splitting.errors = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+# checking all distinct pairs
+\end_layout
+
+\begin_layout Plain Layout
+
+for (i in 1:(n-1)) {
+\end_layout
+
+\begin_layout Plain Layout
+
+# think of above-diagonal entries in a matrix
+\end_layout
+
+\begin_layout Plain Layout
+
+for (j in (i+1):n) {
+\end_layout
+
+\begin_layout Plain Layout
+
+if ((true.class[i] == true.class[j])
+\end_layout
+
+\begin_layout Plain Layout
+
+& (guessed.cluster[i] != guessed.cluster[j])) {
+\end_layout
+
+\begin_layout Plain Layout
+
+# splitting error: really same but put in different clusters
+\end_layout
+
+\begin_layout Plain Layout
+
+num.splitting.errors = num.splitting.errors +1
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+return(num.splitting.errors)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+numspliterror(c(1,2,2),c(1,2,2))
+\end_layout
+
+\begin_layout Plain Layout
+
+numspliterror(c(1,2,2),c(2,1,1))
+\end_layout
+
+\begin_layout Plain Layout
+
+numspliterror(c(1,2,2),c(4,5,6))
+\end_layout
+
+\begin_layout Plain Layout
+
+numspliterror(c(1,2,2),c(1,1,1))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+ii)We repeat the process three times to get different clusterings.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+c1 = kmeans(data,centers=14)
+\end_layout
+
+\begin_layout Plain Layout
+
+c1$cluster
+\end_layout
+
+\begin_layout Plain Layout
+
+c2 = kmeans(data,centers=14)
+\end_layout
+
+\begin_layout Plain Layout
+
+c2$cluster
+\end_layout
+
+\begin_layout Plain Layout
+
+c3 = kmeans(data,centers=14)
+\end_layout
+
+\begin_layout Plain Layout
+
+c3$cluster
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A)We find the number of lumping and splitting errors on each of these three
+ runs.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+data_class=rownames(data)
+\end_layout
+
+\begin_layout Plain Layout
+
+#Counting Lumping Errors
+\end_layout
+
+\begin_layout Plain Layout
+
+numlumperror(data_class,c1$cluster)
+\end_layout
+
+\begin_layout Plain Layout
+
+numlumperror(data_class,c2$cluster)
+\end_layout
+
+\begin_layout Plain Layout
+
+numlumperror(data_class,c3$cluster)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We find the number of splitting errors on each of these three runs.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#Counting Splitting Errors
+\end_layout
+
+\begin_layout Plain Layout
+
+numspliterror(data_class,c1$cluster)
+\end_layout
+
+\begin_layout Plain Layout
+
+numspliterror(data_class,c2$cluster)
+\end_layout
+
+\begin_layout Plain Layout
+
+numspliterror(data_class,c3$cluster)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Comments:-
+\end_layout
+
+\begin_layout Standard
+For comparison, there are 64* 63/2 = 2016 pairs, so the error rate here
+ is quite good.
+\end_layout
+
+\begin_layout Standard
+B)We find if there are any classes which seem particularly hard for K-means
+ to pick up.For doing this first we see how good was the clustering process.For
+ doing this we use the Silhouette Plot and Silhouette Coefficient which
+ are defined as follows:-
+\end_layout
+
+\begin_layout Itemize
+Suppose we are given a particular clustering, 
+\begin_inset Formula $C_{k}$
+\end_inset
+
+, of the data into K clusters.
+\end_layout
+
+\begin_layout Itemize
+c(i) is the cluster containing ith item.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $a_{i}$
+\end_inset
+
+ = average dissimilarity of that ith item to all other members of the same
+ cluster c(i).
+\end_layout
+
+\begin_layout Itemize
+Let d(i,c) be the average dissimilarity of the ith item to all members of
+ another cluster c.
+\end_layout
+
+\begin_layout Itemize
+Suppose 
+\begin_inset Formula $b_{i}$
+\end_inset
+
+ = min d(i,c).
+ Then 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $b_{i}$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ gives the least average dissimilarity of the ith item to other clusters
+ where c is not c(i).
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $b_{i}$
+\end_inset
+
+ = d(i,C), then C is the second-best cluster for the ith item.
+\end_layout
+
+\begin_layout Itemize
+C will be called the neighbor of data point i .
+\end_layout
+
+\begin_layout Itemize
+Comparing 
+\begin_inset Formula $b_{i}$
+\end_inset
+
+ with 
+\begin_inset Formula $a_{i}$
+\end_inset
+
+ gives an idea about the clustering.
+\end_layout
+
+\begin_layout Itemize
+The ith silhouette value (or width) is given by si (CK) = siK = (bi - ai)/
+ max{ 
+\begin_inset Formula $a_{i}$
+\end_inset
+
+,
+\begin_inset Formula $b_{i}$
+\end_inset
+
+} 
+\end_layout
+
+\begin_layout Itemize
+Clearly -1
+\begin_inset Formula $\leq$
+\end_inset
+
+ siK
+\begin_inset Formula $\leq$
+\end_inset
+
+ 1.
+\end_layout
+
+\begin_layout Itemize
+Large positive value of siK : i.e.
+ ai << bi means ith item is well-clustered.
+\end_layout
+
+\begin_layout Itemize
+Large negative value of siK : i.e.
+ ai >> bi means poor clustering.
+\end_layout
+
+\begin_layout Itemize
+siK 
+\begin_inset Formula $\simeq$
+\end_inset
+
+0 means ith item lies between two clusters.
+ 
+\end_layout
+
+\begin_layout Itemize
+max {siK}< 0:25 indicates that either there are no definable clusters in
+ the data or even there are, the clustering process could not identify it.
+ 
+\end_layout
+
+\begin_layout Itemize
+Negative silhouette widths tend to attract attention: the items corresponding
+ to these negative values are considered to be borderline allocations; they
+ are neither well-clustered nor are they assigned by the clustering process
+ to an alternative cluster.
+\end_layout
+
+\begin_layout Itemize
+A silhouette plot is a bar plot of all the {siK} after they are ranked in
+ decreasing order, where the length of the ith bar is siK :
+\end_layout
+
+\begin_layout Itemize
+The average silhouette width 
+\begin_inset Formula $\overline{s_{K}}$
+\end_inset
+
+, is the average of all the {siK} 
+\end_layout
+
+\begin_layout Itemize
+The statistic 
+\begin_inset Formula $\overline{s_{K}}$
+\end_inset
+
+ is a very useful indicator of the clustering 
+\begin_inset Formula $C_{K}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+An alternative way to choose K is to minimize 
+\begin_inset Formula $\overline{s_{K}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+As a tool of clustering diagonostic we use Silhouette Coefficient defined
+ as SC = 
+\begin_inset Formula $max_{K}$
+\end_inset
+
+
+\begin_inset Formula $\overline{_{sK}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(cluster)
+\end_layout
+
+\begin_layout Plain Layout
+
+dissE=daisy(data)
+\end_layout
+
+\begin_layout Plain Layout
+
+sk=silhouette(cluster$cluster,dissE)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(sk)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is evident the clustering is moderately perfect.So there may be classes
+ which was hard to pick up.So we use entropy for the Cluster Assignments.We
+ start with the confusion matrix and then check for one run of K-means and
+ then for more.BREAST and NSCLC tend not to be clustered together.
+\end_layout
+
+\begin_layout Standard
+C)Now we find if there are any pair of cells which are always clustered
+ together.We see cells number 1 and 2 are always clustered together in my
+ three runs, and are CNS tumors.
+ However, cells 3 and 4 are always clustered together, too, and one is CNS
+ and one is RENAL.
+\end_layout
+
+\begin_layout Standard
+b)Now we perform a hierarchial clustering of the dataset using single linkage
+ and complete linkage,produce a dendogram and check which linkage performs
+ better.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+d = dist(data)
+\end_layout
+
+\begin_layout Plain Layout
+
+h1=hclust(d,method="single")
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(h1,cex=0.5,xlab="Cells",main="Hierarchical clustering by single linkage
+ method")
+\end_layout
+
+\begin_layout Plain Layout
+
+h2=hclust(d,method="complete")
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(h2,cex=0.5,xlab="Cells",main="Hierarchical clustering by complete linkage
+ method")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Comments:-
+\end_layout
+
+\begin_layout Standard
+Single linkage is good with RENAL and decent with MELANOMA (though confused
+ with BREAST).
+ There are little sub-trees of cells of the same time, like COLON or CNS,
+ but mixed together with others.
+ The complete linkage method has sub-trees for COLON, LEUKEMIA, MELANOMA,
+ and RENAL.So according to me the method of Single Linkage performs better.
+\end_layout
+
+\begin_layout Standard
+c)The next objective is to reduce the dimension of the dataset.To achieve
+ this we perform Principal Component Analysis on the dataset.
+\end_layout
+
+\begin_layout Standard
+First let us state PCA.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Principal Component Analysis
+\end_layout
+
+\begin_layout Standard
+Suppose we have data on 
+\begin_inset Formula $d$
+\end_inset
+
+ variables for 
+\begin_inset Formula $n$
+\end_inset
+
+ observations.
+ Typically, in modern day applications, most of the data we deal with are
+ such that 
+\begin_inset Formula $n<<d$
+\end_inset
+
+.
+ This gives rise to many problems, which we collectively refer to as the
+ 
+\series bold
+curse of dimensionality.
+ 
+\series default
+However, there are many ways to overcome these problems.
+ The most common of them is to reduce the dimension of the data.
+\end_layout
+
+\begin_layout Standard
+We can reduce the dimension in two ways:
+\end_layout
+
+\begin_layout Itemize
+Either by discarding some of the 
+\begin_inset Formula $d$
+\end_inset
+
+ variables from our study,
+\end_layout
+
+\begin_layout Itemize
+Or, by considering 
+\begin_inset Formula $k(\leq d)$
+\end_inset
+
+ variables which are some linear combinations of the 
+\begin_inset Formula $d$
+\end_inset
+
+ variables under study.
+\end_layout
+
+\begin_layout Standard
+Principal Component Analysis (PCA) deals with determining those linear combinati
+ons of these variables, which are appropriate in some sense 
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $x_{ij}$
+\end_inset
+
+be the value of the 
+\begin_inset Formula $j^{th}$
+\end_inset
+
+ variable for the 
+\begin_inset Formula $i^{th}$
+\end_inset
+
+ observation, and 
+\begin_inset Formula $x_{i}=(x_{i1},x_{i2},...,x_{id})^{T}$
+\end_inset
+
+ denote the vector of values of the 
+\begin_inset Formula $d$
+\end_inset
+
+ variables for the 
+\begin_inset Formula $i^{th}$
+\end_inset
+
+ observation, 
+\begin_inset Formula $i=1(1)n,$
+\end_inset
+
+ 
+\begin_inset Formula $j=1(1)d$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Dimension reduction can be performed by making a transformation of the form
+\begin_inset Formula 
+\[
+y_{i}^{k\times1}=W^{k\times d}x_{i}\;\;\;i=1(1)n
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $W$
+\end_inset
+
+ is a suitable matrix of transformation.
+ In PCA, W is such that its rows are mutually orthonormal.
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $X^{n\times d}=((x_{ij}))=\begin{pmatrix}x_{1}^{T}\\
+x_{2}^{T}\\
+\vdots\\
+x_{n}^{T}
+\end{pmatrix}$
+\end_inset
+
+ be the original data matrix, and 
+\begin_inset Formula $Y^{n\times k}=((y_{ij}))=\begin{pmatrix}y_{1}^{T}\\
+y_{2}^{T}\\
+\vdots\\
+y_{n}^{T}
+\end{pmatrix}$
+\end_inset
+
+ be the data matrix of reduced dimension, then we have
+\begin_inset Formula 
+\[
+Y=XW^{T},
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where the columns of 
+\begin_inset Formula $W^{T},$
+\end_inset
+
+i.e, 
+\begin_inset Formula $w_{1},w_{2},...,w_{k}$
+\end_inset
+
+ are mutually orthonormal.
+ 
+\end_layout
+
+\begin_layout Standard
+Generally, the columns 
+\begin_inset Formula $w_{1},w_{2},...,w_{k}$
+\end_inset
+
+ are so chosen that 
+\begin_inset Formula $w_{i}$
+\end_inset
+
+ is the eigen-vector corresponding to the 
+\begin_inset Formula $i^{th}$
+\end_inset
+
+ largest eigen-value of 
+\begin_inset Formula $S$
+\end_inset
+
+, where
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S=\frac{1}{n}(X-1\bar{x}^{T})^{T}(X-1\bar{x}^{T})
+\]
+
+\end_inset
+
+ is the sample dispersion matrix for the given data.
+ 
+\end_layout
+
+\begin_layout Standard
+The vectors 
+\begin_inset Formula $w_{1},w_{2},...,w_{k}$
+\end_inset
+
+ are called the principal component directions, 
+\begin_inset Formula $w_{i}$
+\end_inset
+
+ being the 
+\begin_inset Formula $i^{th}$
+\end_inset
+
+ principal component direction, and, corresponding to 
+\begin_inset Formula $w_{i},$
+\end_inset
+
+ the quantity 
+\begin_inset Formula $Xw_{i}=\begin{pmatrix}x_{1}^{T}w_{i}\\
+x_{2}^{T}w_{i}\\
+\vdots\\
+x_{n}^{T}w_{i}
+\end{pmatrix}$
+\end_inset
+
+, which is the vector of projections of the rows of 
+\begin_inset Formula $X$
+\end_inset
+
+ onto 
+\begin_inset Formula $w_{i},$
+\end_inset
+
+ is called the vector of principal component projections or simply the principal
+ component along the direction of 
+\begin_inset Formula $w_{i}$
+\end_inset
+
+.
+ The number 
+\begin_inset Formula $k$
+\end_inset
+
+ of principal components is determined such that these 
+\begin_inset Formula $k$
+\end_inset
+
+ components together account for most of the variability in 
+\begin_inset Formula $X$
+\end_inset
+
+ values.
+ 
+\end_layout
+
+\begin_layout Standard
+The amount of variation in 
+\begin_inset Formula $X$
+\end_inset
+
+ explained by the 
+\begin_inset Formula $i^{th}$
+\end_inset
+
+ principal component 
+\begin_inset Formula $Xw_{i}$
+\end_inset
+
+ is 
+\begin_inset Formula $w_{i}^{T}Sw_{i},$
+\end_inset
+
+ which can be shown to be the 
+\begin_inset Formula $i^{th}$
+\end_inset
+
+ largest eigen-value of 
+\begin_inset Formula $S$
+\end_inset
+
+.
+ Thus, performing an eigen analysis of the sample dispersion matrix 
+\begin_inset Formula $S$
+\end_inset
+
+ helps a lot in doing PCA.
+ 
+\end_layout
+
+\begin_layout Standard
+For the sake of ease in computation, instead of working with 
+\begin_inset Formula $X$
+\end_inset
+
+, we work with the centred matrix 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $X-1\bar{x}^{T}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+i)We perform PCA and find the variances associated with the principal components.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+data.pca=prcomp(data)
+\end_layout
+
+\begin_layout Plain Layout
+
+variances = (data.pca$sdev)^2
+\end_layout
+
+\begin_layout Plain Layout
+
+signif(variances,2)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+ii)There are 64 principal components in total.
+\end_layout
+
+\begin_layout Standard
+This is because, when n < p, it is necessarily true that the data lie on
+ an n-dimensional subspace of the p-dimensional feature space, so there
+ are only n orthogonal directions along which the data can vary at all.
+ (Actually, one of the variances is very small because any 64 points lie
+ on a 63-dimensional surface, so we really only need 63 directions, and
+ the last variance is within numerical error of zero.) Alternately, we can
+ imagine that there are (6830 - 64) = 6766 other principal components, each
+ with zero variance.
+\end_layout
+
+\begin_layout Standard
+iii)Now we plot the fraction of the total variance retained by the q principal
+ components.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(cumsum(variances)/sum(variances),xlab="q",ylab="Fraction of variance",main
+ = "Fraction of variance retained by first q components")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Comments:-
+\end_layout
+
+\begin_layout Standard
+From the figure it is evident to see that we can use a lesser number of
+ principal components than 63.
+\end_layout
+
+\begin_layout Standard
+iv)We plot the projection of each cell on to the first principal component
+ with its labels.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(data.pca$x[,1:2],type="n") 
+\end_layout
+
+\begin_layout Plain Layout
+
+text(data.pca$x[,1:2],data_class, cex=0.5)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A)We see in MELANOMA most of the cells cluster in the bottom- center of
+ the gure (PC1 between about 0 and -20, PC2 around -40), with only a few
+ non-MELANOMA cells nearby, and a big gap to the rest of the data.
+ Then we can also see that for LEUKEMIA in the center left, CNS in the upper
+ left, RENAL above it, and COLON in the top right.So these are the tumor
+ classes which form a cluster in these projections.
+\end_layout
+
+\begin_layout Standard
+B)The cells in the class BREAST are scattered and they do not seem to form
+ a cluster.
+\end_layout
+
+\begin_layout Standard
+v)We find the amount of variation explained by the first two principal component
+s.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+sum(data.variances[1:2])/sum(data.variances)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Comments:-
+\end_layout
+
+\begin_layout Standard
+So we see the first two principal components explain about 23% of the total
+ variation.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+PROBLEM-2
+\end_layout
+
+\begin_layout Standard
+In this problem we have worked with the grayscale image of P.C.
+ Mahalanobis.
+ Then we have performed image compression using Vector Quantization by the
+ help of the clustering algorithm K-means which is also known as 
+\begin_inset Quotes eld
+\end_inset
+
+Llyod's algorithm
+\begin_inset Quotes erd
+\end_inset
+
+ in computer science and engineering.
+\end_layout
+
+\begin_layout Standard
+Before proceeding let us check the K-means algorithm and image vector quantizati
+on.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+K-MEANS ALGORITHM
+\end_layout
+
+\begin_layout Standard
+K-means is one of the most popular partitioning methods of clustering.
+ It performs a non-hierarchical clustering and groups the observations of
+ a dataset into a given number of clusters with the view to minimize the
+ within-cluster scatter/variation due to the clustering process.
+ 
+\end_layout
+
+\begin_layout Standard
+Suppose we have 
+\begin_inset Formula $n$
+\end_inset
+
+ observations 
+\begin_inset Formula $x_{1},x_{2},...,x_{n}\epsilon\mathbb{R}^{p}$
+\end_inset
+
+ and a measure 
+\begin_inset Formula $d_{ij}=d(x_{i},x_{j})$
+\end_inset
+
+ of dissimilarity between 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{j},$
+\end_inset
+
+ for every 
+\begin_inset Formula $i,j=1(1)n$
+\end_inset
+
+.
+ We may wish to group the 
+\begin_inset Formula $n$
+\end_inset
+
+ observations into 
+\begin_inset Formula $K$
+\end_inset
+
+ clusters.
+ A clustering of the above 
+\begin_inset Formula $n$
+\end_inset
+
+ observations can be thought of as a function 
+\begin_inset Formula $C$
+\end_inset
+
+ which assigns the cluster number for an observation, i.e, for an observation
+ 
+\begin_inset Formula $x_{i},$
+\end_inset
+
+ 
+\begin_inset Formula $C(x_{i})=k\epsilon\{1,2,...,K\}$
+\end_inset
+
+ denotes the cluster 
+\begin_inset Formula $k$
+\end_inset
+
+ to which 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ is assigned during the clustering process.
+ We may, instead, simply denote by 
+\begin_inset Formula $C(i)$
+\end_inset
+
+, the cluster to which 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ is assigned.
+\end_layout
+
+\begin_layout Standard
+Now, the within cluster scatter due to the above clustering is given by
+\begin_inset Formula 
+\[
+W=\frac{1}{2}\sum_{k=1}^{K}\frac{1}{n_{k}}\sum_{i:C(i)=k,}\sum_{j:C(j)=k}d_{ij}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $n_{k}$
+\end_inset
+
+ is the number of observations in the
+\begin_inset Formula $k^{th}$
+\end_inset
+
+ cluster, 
+\begin_inset Formula $k=1(1)K$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In particular, we may take 
+\begin_inset Formula $d_{ij}=\Vert x_{i}-x_{j}\Vert^{2}$
+\end_inset
+
+, the squared Euclidean Distance between the observations 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{j}$
+\end_inset
+
+.
+ Then, we have 
+\begin_inset Formula 
+\[
+W=\frac{1}{2}\sum_{k=1}^{K}\frac{1}{n_{k}}\sum_{i:C(i)=k}\sum_{,j:C(j)=k}\Vert x_{i}-x_{j}\Vert^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\sum_{k=1}^{K}\frac{1}{n_{k}}\sum_{i:C(i)=k}\Vert x_{i}-\bar{x_{k}}\Vert^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\begin_inset Formula 
+\[
+\bar{x_{k}}=\frac{1}{n_{k}}\sum_{i:C(i)=k}x_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+is the mean of the observations in the 
+\begin_inset Formula $k^{th}$
+\end_inset
+
+ cluster.
+\end_layout
+
+\begin_layout Standard
+This 
+\begin_inset Formula $W$
+\end_inset
+
+ is the within-cluster variation due to the above clustering.
+ Equivalently, we may choose to minimize
+\begin_inset Formula 
+\[
+W=\sum_{k=1}^{K}\frac{1}{n_{k}}\sum_{i:C(i)=k}\Vert x_{i}-c_{k}\Vert^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with respect to the clustering method 
+\begin_inset Formula $C$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{1},c_{2},...,c_{K}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+K-means attempts to find the clustering method 
+\begin_inset Formula $C$
+\end_inset
+
+ so as to approximately minimize this within cluster variation.
+ It runs in the following way:
+\end_layout
+
+\begin_layout Itemize
+We start with an initial guess for 
+\begin_inset Formula $c_{1},c_{2},...,c_{K}$
+\end_inset
+
+ (e.g., pick 
+\begin_inset Formula $K$
+\end_inset
+
+ points at random over the range of 
+\begin_inset Formula $x_{1},...,x_{K}$
+\end_inset
+
+), then:
+\end_layout
+
+\begin_layout Enumerate
+Minimize over 
+\begin_inset Formula $C$
+\end_inset
+
+: for each 
+\begin_inset Formula $i=1(1)n$
+\end_inset
+
+, find the cluster center 
+\begin_inset Formula $c_{k}$
+\end_inset
+
+ closest to 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ , and let 
+\begin_inset Formula $C(i)=k$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Minimize over 
+\begin_inset Formula $c_{1},...,c_{K}:$
+\end_inset
+
+ for each 
+\begin_inset Formula $k=1(1)K$
+\end_inset
+
+, let 
+\begin_inset Formula $c_{k}=\bar{x_{k}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We repeat this process and stop when 
+\begin_inset Formula $W$
+\end_inset
+
+ does not change any more.
+\end_layout
+
+\begin_layout Standard
+Thus, one gets hold of a clustering method 
+\begin_inset Formula $C$
+\end_inset
+
+ to cluster the above 
+\begin_inset Formula $n$
+\end_inset
+
+ observations.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+VECTOR QUANTIZATION
+\end_layout
+
+\begin_layout Standard
+The K-means clustering algorithm represents a key tool in the apparently
+ unrelated area of image and signal compression, particularly in vector
+ quantization or VQ.
+ There are three stages to image vector quantization:
+\end_layout
+
+\begin_layout Itemize
+(Prototype Creation) Generally an image of mn pixels is represented in m
+ rows and n columns.
+ But here first we create arrays by grouping together q local pixels by
+ row (that is q adjacent pixels row-wise).
+ Then we have a collection of vectors V = {Vi, i = 1,2, 3,...., mn/q} where
+ each Vi is a q dimensional vector.
+ This V is called index and the elements Vi are called index entry.
+ Some of these vectors,Vi belonging to V , will be similar in some respects.
+ For example, many vectors may be extracted from a uniform area of an image.
+ This leads to the following idea.
+\end_layout
+
+\begin_layout Standard
+– Cluster vectors in V into r groups where(r << mn/q ).
+ The smaller the choice of r, the greater is the compression.
+\end_layout
+
+\begin_layout Standard
+– In other words, the set of vectors, V is partitioned into r distinct sets,
+ S1,S2,....,Sr corresponding to each cluster.
+\end_layout
+
+\begin_layout Standard
+– Each subset Si is then been represented by a suitable representative/prototype
+ vector (may be the cluster mean/mediod).
+ The set of prototype vectors constitutes the codebook.
+ Each of the member in the codebook is called codeword .
+ 
+\end_layout
+
+\begin_layout Standard
+– Thus codebook contains r vectors, each of which has an address,(1,2,...
+ r).
+ Because the number of selected elements is much smaller than the number
+ of vectors in the image, the number of bits required to represent the address
+ of a prototype vector is much smaller than the number of bits required
+ to represent an image vector.
+\end_layout
+
+\begin_layout Itemize
+(image compression) Now that the prototype vectors have been determined,
+ the next step of VQ consists of image compression and transmission.
+ Each vector in the original image is compared one-at-a-time to each of
+ the prototype vectors in the codebook.
+ The prototype that most closely resembles the input vector is selected,
+ and its address is transmitted/represented.
+ That is the compressed version of the image is only the codebook consisting
+ of r vectors (instead of mn/q vectors) each of which is q dimensional.
+\end_layout
+
+\begin_layout Itemize
+(image decompression) The final step of VQ consists of getting back the
+ image, which will be obviously an approximation to the original one.
+ i.e., a sequence of mn=q addresses, and decompressing it.
+ Each of themn=q vectors will be approximated by the corresponding prototype
+ vector in the codebook (that is the cluster center which it belongs to).
+\end_layout
+
+\begin_layout Standard
+Now we proceed with the grayscale image of P.C.
+ Mahalanobis.
+\end_layout
+
+\begin_layout Enumerate
+First we read the image in R and write a function to plot the original image
+ in R.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,echo=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+require(jpeg)
+\end_layout
+
+\begin_layout Plain Layout
+
+x=as.matrix(readJPEG("C:
+\backslash
+
+\backslash
+Users
+\backslash
+
+\backslash
+Souvik Saha
+\backslash
+
+\backslash
+Documents
+\backslash
+
+\backslash
+Study material
+\backslash
+
+\backslash
+Presidency University PG notes
+\backslash
+
+\backslash
+PG Sem3
+\backslash
+
+\backslash
+Applied Multivariate
+\backslash
+
+\backslash
+Project
+\backslash
+
+\backslash
+References
+\backslash
+
+\backslash
+PCM.jpg"))
+\end_layout
+
+\begin_layout Plain Layout
+
+drawPic = function(y,title)
+\end_layout
+
+\begin_layout Plain Layout
+
+{ 
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(y) = c(430,346)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(1:2,ty='n',main=title)
+\end_layout
+
+\begin_layout Plain Layout
+
+rasterImage(as.raster(y),1,1,2,2)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+drawPic(x,"PCM")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The R-Code for this is:-
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,eval=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+require(jpeg)
+\end_layout
+
+\begin_layout Plain Layout
+
+x=as.vector(readJPEG("C:
+\backslash
+
+\backslash
+Users
+\backslash
+
+\backslash
+Souvik Saha
+\backslash
+
+\backslash
+Documents
+\backslash
+
+\backslash
+Study material
+\backslash
+
+\backslash
+Presidency University PG notes
+\backslash
+
+\backslash
+PG Sem3
+\backslash
+
+\backslash
+Applied Multivariate
+\backslash
+
+\backslash
+Project
+\backslash
+
+\backslash
+References
+\backslash
+
+\backslash
+PCM.jpg"))
+\end_layout
+
+\begin_layout Plain Layout
+
+drawPic = function(y,title)
+\end_layout
+
+\begin_layout Plain Layout
+
+{ 
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(y) = c(430,346)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(1:2,ty='n',main=title)
+\end_layout
+
+\begin_layout Plain Layout
+
+rasterImage(as.raster(y),1,1,2,2)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+drawPic(x,"PCM")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+2.
+ Now we implement a version of VQ with the choice of q=4 and r=15.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,echo=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#Prototype Creation
+\end_layout
+
+\begin_layout Plain Layout
+
+m=nrow(x)
+\end_layout
+
+\begin_layout Plain Layout
+
+n=ncol(x)
+\end_layout
+
+\begin_layout Plain Layout
+
+q=4
+\end_layout
+
+\begin_layout Plain Layout
+
+V=matrix(as.vector(t(x)),nrow=(m*n)/q,ncol=q,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+r=15
+\end_layout
+
+\begin_layout Plain Layout
+
+C=kmeans(V,r,algorithm="Lloyd",iter=600)
+\end_layout
+
+\begin_layout Plain Layout
+
+codebook=C$centers
+\end_layout
+
+\begin_layout Plain Layout
+
+#Image Compression & Decomposition
+\end_layout
+
+\begin_layout Plain Layout
+
+Z=codebook[C$clus,]
+\end_layout
+
+\begin_layout Plain Layout
+
+v.new=as.vector(t(Z))
+\end_layout
+
+\begin_layout Plain Layout
+
+x.new=matrix(v.new,nrow=m,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(x.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+#Drawing the reconstructed image
+\end_layout
+
+\begin_layout Plain Layout
+
+drawPic(x.new,"Reconstructed Image")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The R code for this is:-
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,eval=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#Prototype Creation
+\end_layout
+
+\begin_layout Plain Layout
+
+m=nrow(x)
+\end_layout
+
+\begin_layout Plain Layout
+
+n=ncol(x)
+\end_layout
+
+\begin_layout Plain Layout
+
+q=4
+\end_layout
+
+\begin_layout Plain Layout
+
+V=matrix(as.vector(t(x)),nrow=(m*n)/q,ncol=q,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+r=15
+\end_layout
+
+\begin_layout Plain Layout
+
+C=kmeans(V,r,algorithm="Lloyd",iter=600)
+\end_layout
+
+\begin_layout Plain Layout
+
+codebook=C$centers
+\end_layout
+
+\begin_layout Plain Layout
+
+#Image Compression & Decomposition
+\end_layout
+
+\begin_layout Plain Layout
+
+Z=codebook[C$clus,]
+\end_layout
+
+\begin_layout Plain Layout
+
+v.new=as.vector(t(Z))
+\end_layout
+
+\begin_layout Plain Layout
+
+x.new=matrix(v.new,nrow=m,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(x.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+#Drawing the reconstructed image
+\end_layout
+
+\begin_layout Plain Layout
+
+drawPic(x.new,"recon_photo")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Comments:-
+\end_layout
+
+\begin_layout Standard
+Since we are finding an approximation of the original image the reconstructed
+ image is a little blurred,hazy and less prominent than the actual one.
+\end_layout
+
+\begin_layout Standard
+3.Now we repeat the process of reconstructing the image for some choices
+ of r say 5,3,15,30,50,100,500.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,echo=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+recon.pic<-function(A,q,r)
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+m=nrow(A)
+\end_layout
+
+\begin_layout Plain Layout
+
+n=ncol(A)
+\end_layout
+
+\begin_layout Plain Layout
+
+V=matrix(as.vector(t(A)),nrow=(m*n)/q,ncol=q,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+C=kmeans(V,r,algorithm="Lloyd",iter=600)
+\end_layout
+
+\begin_layout Plain Layout
+
+codebook=C$centers
+\end_layout
+
+\begin_layout Plain Layout
+
+Z=codebook[C$clus,]
+\end_layout
+
+\begin_layout Plain Layout
+
+v.new=as.vector(t(Z))
+\end_layout
+
+\begin_layout Plain Layout
+
+x.new=matrix(v.new,nrow=m,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(x.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+PIC=drawPic(x.new,paste("R=",r))
+\end_layout
+
+\begin_layout Plain Layout
+
+return(PIC)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mfrow=c(3,3))
+\end_layout
+
+\begin_layout Plain Layout
+
+R=c(3,5,15,30,50,100,500)
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:length(R))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	recon.pic(x,4,R[i])
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The R-Code for this is:-
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,eval=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+recon.pic<-function(A,q,r)
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+m=nrow(A)
+\end_layout
+
+\begin_layout Plain Layout
+
+n=ncol(A)
+\end_layout
+
+\begin_layout Plain Layout
+
+V=matrix(as.vector(t(A)),nrow=(m*n)/q,ncol=q,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+C=kmeans(V,r,algorithm="Lloyd",iter=600)
+\end_layout
+
+\begin_layout Plain Layout
+
+codebook=C$centers
+\end_layout
+
+\begin_layout Plain Layout
+
+Z=codebook[C$clus,]
+\end_layout
+
+\begin_layout Plain Layout
+
+v.new=as.vector(t(Z))
+\end_layout
+
+\begin_layout Plain Layout
+
+x.new=matrix(v.new,nrow=m,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(x.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+PIC=drawPic(x.new,paste("R=",r))
+\end_layout
+
+\begin_layout Plain Layout
+
+return(PIC)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mfrow=c(3,3))
+\end_layout
+
+\begin_layout Plain Layout
+
+R=c(3,5,15,30,50,100,500)
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:length(R))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	recon.pic(x,4,R[i])
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Comments:-
+\end_layout
+
+\begin_layout Standard
+We know a small value of r indicates large compression but greater approximation.
+Hence with the increase in r we see the reconstructed image is getting clearer
+ and exact with the original image i.e the blurriness in the image is decreasing.
+\end_layout
+
+\begin_layout Standard
+4.Now we calculate the Euclidean distance between the original image and
+ the estimated image and study the variation with changes in the value of
+ r.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,echo=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#First we create a function for calculating the distance
+\end_layout
+
+\begin_layout Plain Layout
+
+euclid<-function(a,b)
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	Dis=sqrt(sum((a-b)^2))
+\end_layout
+
+\begin_layout Plain Layout
+
+	return(Dis)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+#Now using this function we create another function for finding the Euclidean
+ distance for the images.
+\end_layout
+
+\begin_layout Plain Layout
+
+euclid.pic<-function(A,q,r)
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+x=as.vector(t(A))
+\end_layout
+
+\begin_layout Plain Layout
+
+m=nrow(A);n=ncol(A)
+\end_layout
+
+\begin_layout Plain Layout
+
+V=matrix(as.vector(t(A)),nrow=(m*n)/q,ncol=q,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+C=kmeans(V,r,algorithm="Lloyd",iter=600)
+\end_layout
+
+\begin_layout Plain Layout
+
+codebook=C$centers
+\end_layout
+
+\begin_layout Plain Layout
+
+Z=codebook[C$clus,]
+\end_layout
+
+\begin_layout Plain Layout
+
+v.new=as.vector(t(Z))
+\end_layout
+
+\begin_layout Plain Layout
+
+x.new=matrix(v.new,nrow=m,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+D=euclid(x,x.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+return(D)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+R.new=c(3,5,15,30,50,100,500)
+\end_layout
+
+\begin_layout Plain Layout
+
+dis=NULL
+\end_layout
+
+\begin_layout Plain Layout
+
+q=4
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:length(R.new))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	dis[i]=euclid.pic(x,q,R.new[i])
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+dis
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(R.new,dis,type="l",main='Variation of Distance with r')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The R code for doing this is:-
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,eval=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#First we create a function for calculating the distance
+\end_layout
+
+\begin_layout Plain Layout
+
+euclid<-function(a,b)
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	Dis=sqrt(sum((a-b)^2))
+\end_layout
+
+\begin_layout Plain Layout
+
+	return(Dis)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+#Now using this function we create another function for finding the Euclidean
+ distance for the images.
+\end_layout
+
+\begin_layout Plain Layout
+
+euclid.pic<-function(A,q,r)
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+x=as.vector(t(A))
+\end_layout
+
+\begin_layout Plain Layout
+
+m=nrow(A);n=ncol(A)
+\end_layout
+
+\begin_layout Plain Layout
+
+V=matrix(as.vector(t(A)),nrow=(m*n)/q,ncol=q,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+C=kmeans(V,r,algorithm="Lloyd",iter=600)
+\end_layout
+
+\begin_layout Plain Layout
+
+codebook=C$centers
+\end_layout
+
+\begin_layout Plain Layout
+
+Z=codebook[C$clus,]
+\end_layout
+
+\begin_layout Plain Layout
+
+v.new=as.vector(t(Z))
+\end_layout
+
+\begin_layout Plain Layout
+
+x.new=matrix(v.new,nrow=m,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+D=euclid(x,x.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+return(D)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+R.new=c(3,5,15,30,50,100,500)
+\end_layout
+
+\begin_layout Plain Layout
+
+dis=NULL
+\end_layout
+
+\begin_layout Plain Layout
+
+q=4
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:length(R.new))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	dis[i]=euclid.pic(x,q,R.new[i])
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+dis
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(R.new,dis,type="l",,main='Variation of Distance with r')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Comments:-
+\end_layout
+
+\begin_layout Standard
+The graph shows a sharp increase of the Euclidean distance between the original
+ and estimated images with increase in r.
+\end_layout
+
+\begin_layout Standard
+5.Now we repeat the process VQ keeping r fixed say at 15 and for different
+ values of q say (2,4,5,10,15)
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,echo=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+recon.pic<-function(A,q,r)
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+m=nrow(A);n=ncol(A)
+\end_layout
+
+\begin_layout Plain Layout
+
+V=matrix(as.vector(t(A)),nrow=(m*n)/q,ncol=q,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+C=kmeans(V,r,algorithm="Lloyd",iter=600)
+\end_layout
+
+\begin_layout Plain Layout
+
+codebook=C$centers
+\end_layout
+
+\begin_layout Plain Layout
+
+Z=codebook[C$clus,]
+\end_layout
+
+\begin_layout Plain Layout
+
+v.new=as.vector(t(Z))
+\end_layout
+
+\begin_layout Plain Layout
+
+x.new=matrix(v.new,nrow=m,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(x.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+PIC=drawPic(x.new,paste("Q=",q))
+\end_layout
+
+\begin_layout Plain Layout
+
+return(PIC)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+Q=c(2,4,5,10,15)
+\end_layout
+
+\begin_layout Plain Layout
+
+r.new=15
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mfrow=c(3,2))
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:length(Q))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	recon.pic(x,Q[i],r.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The R Code for this is:-
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,eval=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+recon.pic<-function(A,q,r)
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+m=nrow(A);n=ncol(A)
+\end_layout
+
+\begin_layout Plain Layout
+
+V=matrix(as.vector(t(A)),nrow=(m*n)/q,ncol=q,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+C=kmeans(V,r,algorithm="Lloyd",iter=600)
+\end_layout
+
+\begin_layout Plain Layout
+
+codebook=C$centers
+\end_layout
+
+\begin_layout Plain Layout
+
+Z=codebook[C$clus,]
+\end_layout
+
+\begin_layout Plain Layout
+
+v.new=as.vector(t(Z))
+\end_layout
+
+\begin_layout Plain Layout
+
+x.new=matrix(v.new,nrow=m,byrow=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(x.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+PIC=drawPic(x.new,paste("Q=",q))
+\end_layout
+
+\begin_layout Plain Layout
+
+return(PIC)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+Q=c(2,4,5,10,15)
+\end_layout
+
+\begin_layout Plain Layout
+
+r.new=15
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mfrow=c(3,2))
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:length(Q))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	recon.pic(x,Q[i],r.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Comments:-
+\end_layout
+
+\begin_layout Standard
+With the increase in the value of q we see the reconstructed images become
+ more hazy,blurred and less prominent with respect to the original image.
+\end_layout
+
+\begin_layout Standard
+6.Now we calculate the Euclidean distance between the original and reconstructed
+ images for various values of q.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,echo=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+R.new=15
+\end_layout
+
+\begin_layout Plain Layout
+
+dis=NULL
+\end_layout
+
+\begin_layout Plain Layout
+
+q=c(2,4,5,10,15)
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:length(q))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	dis[i]=euclid.pic(x,q[i],R.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+dis
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(q,dis,type="l",main='Variation of Euclidean Distance with q')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The R code for this is:-
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<comment=NA,eval=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+R.new=15
+\end_layout
+
+\begin_layout Plain Layout
+
+dis=NULL
+\end_layout
+
+\begin_layout Plain Layout
+
+q=c(2,4,5,10,15)
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:length(q))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	dis[i]=euclid.pic(x,q[i],R.new)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+dis
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(q,dis,type="l",main='Variation of Euclidean Distance with q')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Comments:-
+\end_layout
+
+\begin_layout Standard
+There is a sharp decrease in the Euclidean distance between original and
+ estimated images with increase in the value of q.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+REFERENCES USED FOR THIS PROBLEM:-
+\end_layout
+
+\begin_layout Standard
+(a) The Elements of Statistical Learning, Hastie, Tibshirani, et.al.
+\end_layout
+
+\begin_layout Standard
+(b) Image compression using learned vector quantization, K.
+ Ferens, W.Lehn, and W.
+ Kinsner.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+ACKNOWLEDGEMENT
+\end_layout
+
+\begin_layout Standard
+I would like to thank Prof Atanu Kumar Ghosh and the authors of the books
+ and papers I have used as references for this project.
+\end_layout
+
+\end_body
+\end_document
